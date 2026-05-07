@@ -388,7 +388,7 @@ export default function TopicsManagerPage() {
                   className="bg-emerald-800 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm"
                   onClick={handleCreate}
                 >
-                  ✨ Create Topic
+                  {"\u2728"} Create Topic
                 </button>
               </div>
             </div>
