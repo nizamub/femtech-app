@@ -45,27 +45,26 @@ export async function POST(req: NextRequest) {
       language: lang,
     }).returning();
 
-    // Load first question of the first topic
+    // Build demographic filters — Drizzle's and() safely ignores undefined values
     const firstTopicId = topicIds[0];
-    
-    const questionConditions = [
-      eq(questions.topicId, firstTopicId),
-      eq(questions.active, true)
-    ];
 
-    if (userAge !== null) {
-      questionConditions.push(lte(questions.minAge, userAge));
-      questionConditions.push(gte(questions.maxAge, userAge));
-    }
+    const ageFilter = userAge !== null
+      ? and(lte(questions.minAge, userAge), gte(questions.maxAge, userAge))
+      : undefined;
 
-    if (userGender !== null) {
-      questionConditions.push(or(isNull(questions.targetGender), eq(questions.targetGender, userGender)));
-    }
+    const genderFilter = userGender !== null
+      ? or(isNull(questions.targetGender), eq(questions.targetGender, userGender))
+      : undefined;
 
     const [firstQuestion] = await db
       .select()
       .from(questions)
-      .where(and(...(questionConditions as any)))
+      .where(and(
+        eq(questions.topicId, firstTopicId),
+        eq(questions.active, true),
+        ageFilter,
+        genderFilter,
+      ))
       .orderBy(asc(questions.orderIndex))
       .limit(1);
 

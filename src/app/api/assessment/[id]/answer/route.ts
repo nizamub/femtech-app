@@ -7,12 +7,12 @@ import { eq, and, asc, gt, lte, gte, or, isNull } from "drizzle-orm";
 import { z } from "zod";
 
 const schema = z.object({
-  topicId:       z.string().uuid(),
-  questionId:    z.string().uuid(),
-  optionId:      z.string().uuid().optional(),
+  topicId: z.string().uuid(),
+  questionId: z.string().uuid(),
+  optionId: z.string().uuid().optional(),
   freeTextValue: z.string().optional(),
-  numericValue:  z.number().optional(),
-  severity:      z.number().int().min(0).max(10).default(0),
+  numericValue: z.number().optional(),
+  severity: z.number().int().min(0).max(10).default(0),
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -44,20 +44,28 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       if (opt) {
         severity = opt.severity;
         nextQuestionId = opt.nextQuestionId ?? null;
-        // If end_assessment is set, complete will be called separately
       }
     }
 
     // Save answer
     await db.insert(assessmentAnswers).values({
       assessmentId,
-      topicId:       data.topicId,
-      questionId:    data.questionId,
-      optionId:      data.optionId ?? null,
+      topicId: data.topicId,
+      questionId: data.questionId,
+      optionId: data.optionId ?? null,
       freeTextValue: data.freeTextValue ?? null,
-      numericValue:  data.numericValue ?? null,
+      numericValue: data.numericValue ?? null,
       severity,
     });
+
+    // Build reusable demographic filter helpers
+    const ageFilter = userAge !== null
+      ? and(lte(questions.minAge, userAge), gte(questions.maxAge, userAge))
+      : undefined;
+
+    const genderFilter = userGender !== null
+      ? or(isNull(questions.targetGender), eq(questions.targetGender, userGender))
+      : undefined;
 
     // Determine next question
     let nextQuestion = null;
@@ -74,25 +82,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       // Default: next question by orderIndex in same topic
       const [currentQ] = await db.select().from(questions).where(eq(questions.id, data.questionId)).limit(1);
       if (currentQ) {
-        const questionConditions = [
-          eq(questions.topicId, data.topicId),
-          eq(questions.active, true),
-          gt(questions.orderIndex, currentQ.orderIndex)
-        ];
-        
-        if (userAge !== null) {
-          questionConditions.push(lte(questions.minAge, userAge));
-          questionConditions.push(gte(questions.maxAge, userAge));
-        }
-        
-        if (userGender !== null) {
-          questionConditions.push(or(isNull(questions.targetGender), eq(questions.targetGender, userGender)));
-        }
-
         const [q] = await db.select().from(questions)
-          .where(and(...(questionConditions as any)))
+          .where(and(
+            eq(questions.topicId, data.topicId),
+            eq(questions.active, true),
+            gt(questions.orderIndex, currentQ.orderIndex),
+            ageFilter,
+            genderFilter,
+          ))
           .orderBy(asc(questions.orderIndex))
           .limit(1);
+
         if (q) {
           const opts = await db.select().from(answerOptions).where(eq(answerOptions.questionId, q.id)).orderBy(asc(answerOptions.orderIndex));
           nextQuestion = { ...q, options: opts };
@@ -100,41 +100,29 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           // No more questions in current topic. Transition to NEXT topic with questions.
           const topicIds = assessment.topicIds as string[];
           let currentIndex = topicIds.indexOf(data.topicId);
-          
+
           while (currentIndex !== -1 && currentIndex + 1 < topicIds.length) {
             const nextTopicId = topicIds[currentIndex + 1];
-            
-            const nextTopicQuestionConditions = [
-              eq(questions.topicId, nextTopicId),
-              eq(questions.active, true)
-            ];
-            
-            if (userAge !== null) {
-              nextTopicQuestionConditions.push(lte(questions.minAge, userAge));
-              nextTopicQuestionConditions.push(gte(questions.maxAge, userAge));
-            }
-            
-            if (userGender !== null) {
-              nextTopicQuestionConditions.push(or(isNull(questions.targetGender), eq(questions.targetGender, userGender)));
-            }
-            
-            // Get first question of next topic
+
             const [firstQ] = await db.select().from(questions)
-              .where(and(...(nextTopicQuestionConditions as any)))
+              .where(and(
+                eq(questions.topicId, nextTopicId),
+                eq(questions.active, true),
+                ageFilter,
+                genderFilter,
+              ))
               .orderBy(asc(questions.orderIndex))
               .limit(1);
 
             if (firstQ) {
-              // Found a topic with questions
               const [t] = await db.select().from(topics).where(eq(topics.id, nextTopicId)).limit(1);
               if (t) nextTopic = t;
 
               const opts = await db.select().from(answerOptions).where(eq(answerOptions.questionId, firstQ.id)).orderBy(asc(answerOptions.orderIndex));
               nextQuestion = { ...firstQ, options: opts };
-              break; // Stop looking, we found the next question
+              break;
             }
-            
-            // If this topic had no questions, loop to the next one
+
             currentIndex++;
           }
         }
