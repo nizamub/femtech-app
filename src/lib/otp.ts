@@ -27,33 +27,33 @@ export async function sendOtp(email: string, type: "verify" | "reset" = "verify"
   });
 
   const subject = type === "verify"
-    ? "Aura — Verify your email"
-    : "Aura — Reset your password";
+    ? "Usha — Verify your email"
+    : "Usha — Reset your password";
 
   const html = `
-    <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+    <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background-color: #FAF9F6;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="color: #065F46; margin: 0; font-size: 28px;">Aura</h1>
+        <h1 style="color: #C2410C; margin: 0; font-size: 32px; font-weight: 800;">উষা USHA</h1>
       </div>
-      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px; color: #0F172A;">
-        <h2 style="margin-top: 0;">${type === "verify" ? "Verify your email" : "Reset your password"}</h2>
-        <p>Use the following code to ${type === "verify" ? "verify your account" : "reset your password"}. It expires in <strong>10 minutes</strong>.</p>
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px; color: #14532D; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h2 style="margin-top: 0; color: #14532D;">${type === "verify" ? "Verify your email" : "Reset your password"}</h2>
+        <p style="color: #475569;">Use the following code to ${type === "verify" ? "verify your account" : "reset your password"}. It expires in <strong>10 minutes</strong>.</p>
         <div style="text-align: center; margin: 32px 0;">
-          <div style="display: inline-block; background: #F8FAFC; border: 2px solid #065F46; border-radius: 12px; padding: 16px 40px;">
-            <span style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #065F46;">${token}</span>
+          <div style="display: inline-block; background: #FFF7ED; border: 2px solid #C2410C; border-radius: 12px; padding: 16px 40px;">
+            <span style="font-size: 36px; font-weight: 800; letter-spacing: 12px; color: #C2410C;">${token}</span>
           </div>
         </div>
         <p style="color: #64748B; font-size: 13px;">If you did not request this, you can safely ignore this email.</p>
       </div>
       <p style="text-align: center; color: #64748B; font-size: 12px; margin-top: 24px;">
-        Aura — Modern Serenity & Wellness Tech
+        উষা USHA — Rooted in Nature. Rising with Hope.
       </p>
     </div>
   `;
 
   const { error } = await resend.emails.send({
-    from:    process.env.RESEND_FROM ?? "Aura <onboarding@resend.dev>",
-    to:      email,
+    from: process.env.RESEND_FROM ?? "Usha <hello@ushahealth.online>", // Updated backup email
+    to: email,
     subject,
     html,
   });

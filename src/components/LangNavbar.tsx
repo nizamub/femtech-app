@@ -32,13 +32,13 @@ export function LangNavbar({ dict, lang, session }: Props) {
   // Nav links for logged-in users
   const navLinks = user
     ? [
-        { href: `/${lang}/assessment`, label: dict.nav.assessment, icon: Stethoscope },
-        ...(isExpert
-          ? [{ href: `/${lang}/expert/dashboard`, label: dict.nav.expertPanel, icon: LayoutDashboard }]
-          : [{ href: `/${lang}/dashboard`, label: dict.nav.dashboard, icon: LayoutDashboard }]
-        ),
-        { href: `/${lang}/clinicians`, label: dict.nav.clinicians, icon: MapPin },
-      ]
+      { href: `/${lang}/assessment`, label: dict.nav.assessment, icon: Stethoscope },
+      ...(isExpert
+        ? [{ href: `/${lang}/expert/dashboard`, label: dict.nav.expertPanel, icon: LayoutDashboard }]
+        : [{ href: `/${lang}/dashboard`, label: dict.nav.dashboard, icon: LayoutDashboard }]
+      ),
+      { href: `/${lang}/clinicians`, label: dict.nav.clinicians, icon: MapPin },
+    ]
     : [];
 
   return (
@@ -54,7 +54,7 @@ export function LangNavbar({ dict, lang, session }: Props) {
               <Sun size={16} className="text-white" />
             </div>
             <div className="leading-none">
-              <span className="font-extrabold text-[1rem] text-orange-800 tracking-tight">উষা</span>
+              <span className="font-extrabold text-[1rem] text-orange-800 tracking-tight">ঊষা</span>
               <span className="font-extrabold text-[1rem] text-green-900 tracking-tight ml-1">USHA</span>
             </div>
             {isExpert && (
@@ -72,11 +72,10 @@ export function LangNavbar({ dict, lang, session }: Props) {
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    active
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all ${active
                       ? "bg-orange-700 text-white shadow-sm shadow-orange-700/30"
                       : "text-stone-600 hover:bg-stone-100/80 hover:text-stone-900"
-                  }`}
+                    }`}
                 >
                   <Icon size={15} />
                   {label}
@@ -154,11 +153,10 @@ export function LangNavbar({ dict, lang, session }: Props) {
                   key={href}
                   href={href}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                    active
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${active
                       ? "bg-orange-700 text-white"
                       : "text-stone-700 hover:bg-stone-100"
-                  }`}
+                    }`}
                 >
                   <Icon size={17} />
                   {label}
