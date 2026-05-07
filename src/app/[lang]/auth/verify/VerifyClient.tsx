@@ -81,20 +81,20 @@ export default function VerifyClient({ dict, lang }: Props) {
     <div className="min-h-[calc(100vh-60px)] flex items-center justify-center p-8">
       <div className="w-full max-w-md text-center">
         {success ? (
-          <CheckCircle className="text-emerald-500 mx-auto mb-4" size={48} />
+          <CheckCircle className="text-orange-500 mx-auto mb-4" size={48} />
         ) : (
-          <Mail className="text-emerald-800 mx-auto mb-4" size={48} />
+          <Mail className="text-orange-700 mx-auto mb-4" size={48} />
         )}
         <h1 className="text-2xl font-bold text-slate-900 mb-1">{d.verifyTitle}</h1>
-        <p className="text-sm text-slate-500 mb-2">
-          {d.verifySubtitle} <strong className="text-emerald-800">{email}</strong>
+        <p className="text-sm text-stone-500 mb-2">
+          {d.verifySubtitle} <strong className="text-orange-700">{email}</strong>
         </p>
-        <p className="text-xs text-slate-400 mb-6">{d.otpExpiry}</p>
+        <p className="text-xs text-stone-400 mb-6">{d.otpExpiry}</p>
 
         {success ? (
-          <div className="text-emerald-600 font-bold text-lg animate-up">✓ Email verified! Redirecting…</div>
+          <div className="text-orange-500 font-bold text-lg animate-up">✓ Email verified! Redirecting…</div>
         ) : (
-          <div className="bg-white/80 backdrop-blur-xl border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8 flex flex-col animate-up">
+          <div className="bg-white/80 backdrop-blur-xl border border-stone-200 shadow-sm rounded-2xl p-6 sm:p-8 flex flex-col animate-up">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm mb-4 font-medium">
                 {error}
@@ -108,25 +108,25 @@ export default function VerifyClient({ dict, lang }: Props) {
                   value={digit}
                   onChange={e => handleInput(i, e.target.value)}
                   onKeyDown={e => handleKeyDown(i, e)}
-                  className={`w-12 h-14 text-center text-2xl font-extrabold bg-slate-50 border-2 rounded-xl text-slate-900 outline-none transition-all ${
-                    digit ? "border-emerald-800" : "border-slate-200 focus:border-emerald-500"
+                  className={`w-12 h-14 text-center text-2xl font-extrabold bg-stone-50 border-2 rounded-xl text-slate-900 outline-none transition-all ${
+                    digit ? "border-emerald-800" : "border-stone-200 focus:border-orange-500"
                   }`}
                 />
               ))}
             </div>
-            <button id="verify-submit" className="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg transition-colors mb-3" onClick={handleVerify} disabled={loading}>
+            <button id="verify-submit" className="w-full bg-orange-700 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition-colors mb-3" onClick={handleVerify} disabled={loading}>
               {loading ? dict.common.loading : d.verifyBtn}
             </button>
-            <div className="text-sm text-slate-500">
+            <div className="text-sm text-stone-500">
               {countdown > 0
                 ? <span>{d.resendIn} {countdown} {d.seconds}</span>
-                : <button onClick={handleResend} className="bg-transparent border-none text-emerald-800 cursor-pointer font-bold hover:underline p-0">{d.resendCode}</button>
+                : <button onClick={handleResend} className="bg-transparent border-none text-orange-700 cursor-pointer font-bold hover:underline p-0">{d.resendCode}</button>
               }
             </div>
           </div>
         )}
 
-        <p className="text-sm text-slate-500 mt-6">
+        <p className="text-sm text-stone-500 mt-6">
           <Link href={`/${lang}/auth/register`} className="hover:text-slate-700 transition-colors">← Back to register</Link>
         </p>
       </div>

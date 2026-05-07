@@ -14,19 +14,19 @@ async function requireExpert() {
 }
 
 const updateSchema = z.object({
-  slug:             z.string().optional(),
-  nameEn:           z.string().optional(),
-  nameBn:           z.string().optional(),
-  laypersonNameEn:  z.string().optional(),
-  laypersonNameBn:  z.string().optional(),
-  descriptionEn:    z.string().optional(),
-  descriptionBn:    z.string().optional(),
+  slug:             z.string().min(1).optional(),
+  nameEn:           z.string().min(1).optional(),
+  nameBn:           z.string().nullish(),
+  laypersonNameEn:  z.string().min(1).optional(),
+  laypersonNameBn:  z.string().nullish(),
+  descriptionEn:    z.string().min(1).optional(),
+  descriptionBn:    z.string().nullish(),
   severity:         z.enum(["low","moderate","high","critical"]).optional(),
   urgencyLabel:     z.string().optional(),
-  specialistType:   z.string().optional(),
-  nextStepsEn:      z.string().optional(),
-  nextStepsBn:      z.string().optional(),
-  scoringThreshold: z.number().min(0).max(100).nullable().optional(),
+  specialistType:   z.string().nullish(),
+  nextStepsEn:      z.string().nullish(),
+  nextStepsBn:      z.string().nullish(),
+  scoringThreshold: z.number().min(0).max(100).nullish(),   // ← .nullish() = null | undefined | number
   active:           z.boolean().optional(),
 });
 
@@ -36,6 +36,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   try {
     const data = updateSchema.parse(await req.json());
     const [updated] = await db.update(conditions).set({ ...data, updatedAt: new Date() }).where(eq(conditions.id, id)).returning();
+    if (!updated) return NextResponse.json({ error: "Condition not found", code: "NOT_FOUND" }, { status: 404 });
     return NextResponse.json(updated);
   } catch (e: any) {
     if (e.name === "ZodError") return NextResponse.json({ error: "Invalid input", code: "VALIDATION_ERROR" }, { status: 400 });

@@ -27,12 +27,12 @@ export default function AssessmentClient({
 
   const isBn = lang === "bn";
 
-  const startAssessment = useCallback(async () => {
+  const startAssessment = useCallback(async (topicId?: string) => {
     setLoading(true); setError(null);
     try {
       const res = await fetch("/api/assessment/start", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lang }),
+        body: JSON.stringify({ lang, ...(topicId ? { topicId } : {}) }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to start");
@@ -112,32 +112,126 @@ export default function AssessmentClient({
     setProgress(p => Math.max(p - (100 / (topics.reduce((acc, t) => acc + t.questions.length, 0) || 10)), 0));
   };
 
-  // ── Start Screen ───────────────────────────────────────────────────────────
+  // ── Topic Selection Screen ──────────────────────────────────────────────────
   if (phase === "topic-select") {
-    return (
-      <div className="min-h-[calc(100vh-60px)] flex items-center justify-center p-6 bg-slate-50 relative overflow-hidden">
-        {/* Decorative background */}
-        <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-72 h-72 bg-teal-200/30 rounded-full blur-3xl pointer-events-none" />
+    const totalQuestions = topics.reduce((acc, t) => acc + t.questions.length, 0);
 
-        <div className="w-full max-w-lg bg-white/80 backdrop-blur-xl border border-white shadow-xl rounded-[2.5rem] p-10 sm:p-12 text-center relative z-10 animate-up">
-          <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm border border-emerald-100">
-            <Icons.Stethoscope className="text-emerald-700" size={40} />
+    return (
+      <div className="min-h-[calc(100vh-60px)] bg-stone-50 py-10 px-4">
+        <div className="max-w-4xl mx-auto animate-up">
+
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 text-orange-700 text-xs font-bold mb-5 uppercase tracking-wider">
+              <Icons.Stethoscope size={14} />
+              {isBn ? "স্বাস্থ্য মূল্যায়ন" : "Health Assessment"}
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-stone-900 mb-3 tracking-tight">
+              {isBn ? "কোন বিষয়ে পরীক্ষা করতে চান?" : "What would you like to check?"}
+            </h1>
+            <p className="text-stone-500 font-medium max-w-xl mx-auto">
+              {isBn
+                ? "একটি নির্দিষ্ট স্বাস্থ্য বিষয় বেছে নিন, অথবা সম্পূর্ণ স্বাস্থ্য পরীক্ষার জন্য 'সবকিছু' বেছে নিন।"
+                : "Pick a specific health topic, or choose \"Everything\" for a full comprehensive assessment."}
+            </p>
           </div>
-          <h1 className="text-3xl font-extrabold mb-4 text-slate-900 tracking-tight">
-            {isBn ? "আপনার স্বাস্থ্য মূল্যায়ন শুরু করুন" : "Clinical Assessment"}
-          </h1>
-          <p className="text-slate-600 mb-10 text-[1.05rem] leading-relaxed font-medium">
-            {isBn ? "আমরা আপনাকে কয়েকটি ধাপে আপনার স্বাস্থ্য সম্পর্কে প্রশ্ন করব।" : "We will guide you through a comprehensive health assessment section by section. It takes just a few minutes."}
-          </p>
-          {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-bold flex items-center gap-2 justify-center"><Icons.AlertCircle size={16} /> {error}</div>}
-          <button onClick={startAssessment} disabled={loading} className="group relative w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl text-lg transition-all shadow-lg hover:shadow-emerald-900/20 flex items-center justify-center overflow-hidden">
-            <span className="relative z-10 flex items-center gap-2">
-              {loading ? (isBn ? "শুরু হচ্ছে..." : "Starting Assessment...") : (isBn ? "শুরু করুন" : "Begin Checkup")}
-              {!loading && <Icons.ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
-            </span>
-            {loading && <div className="absolute inset-0 bg-emerald-900/20 animate-pulse" />}
-          </button>
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-sm font-bold flex items-center gap-2 max-w-lg mx-auto">
+              <Icons.AlertCircle size={16} /> {error}
+            </div>
+          )}
+
+          {/* Card Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+            {/* Everything card — always first */}
+            <button
+              onClick={() => startAssessment()}
+              disabled={loading}
+              className="group col-span-1 sm:col-span-2 lg:col-span-3 bg-gradient-to-br from-orange-700 to-orange-900 hover:from-orange-600 hover:to-orange-800 text-white rounded-3xl p-7 text-left transition-all shadow-lg hover:shadow-orange-700/30 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait flex items-center gap-6"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                {loading
+                  ? <Icons.Loader2 size={32} className="animate-spin" />
+                  : <Icons.LayoutGrid size={32} />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xl font-extrabold mb-1">
+                  {isBn ? "সম্পূর্ণ স্বাস্থ্য মূল্যায়ন" : "Full Assessment — Everything"}
+                </div>
+                <div className="text-orange-200 text-sm font-medium">
+                  {isBn
+                    ? `সকল ${topics.length}টি বিষয় • আনুমানিক ${totalQuestions} প্রশ্ন`
+                    : `All ${topics.length} topics · ~${totalQuestions} questions · Comprehensive report`}
+                </div>
+              </div>
+              <Icons.ArrowRight size={24} className="shrink-0 opacity-60 group-hover:translate-x-1 transition-transform" />
+            </button>
+
+            {/* Divider */}
+            <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex items-center gap-4">
+              <div className="flex-1 h-px bg-stone-200" />
+              <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">
+                {isBn ? "অথবা একটি বিষয় বেছে নিন" : "Or choose a specific topic"}
+              </span>
+              <div className="flex-1 h-px bg-stone-200" />
+            </div>
+
+            {/* Individual topic cards */}
+            {topics.map((topic) => {
+              const IconComp = (Icons as any)[topic.icon] || Icons.Activity;
+              const isLucide = !!(Icons as any)[topic.icon];
+              const questionCount = topic.questions.length;
+              const description = (topic as any).description;
+
+              return (
+                <button
+                  key={topic.id}
+                  onClick={() => startAssessment(topic.id)}
+                  disabled={loading || questionCount === 0}
+                  className="group bg-white hover:bg-stone-50 border border-stone-200 hover:border-orange-300 rounded-2xl p-6 text-left transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed flex flex-col gap-4"
+                >
+                  {/* Icon + count */}
+                  <div className="flex items-start justify-between">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm border"
+                      style={{ color: topic.color, backgroundColor: `${topic.color}18`, borderColor: `${topic.color}30` }}
+                    >
+                      {isLucide ? <IconComp size={24} /> : <span className="text-2xl">{topic.icon}</span>}
+                    </div>
+                    <span
+                      className="text-xs font-bold px-2.5 py-1 rounded-full border"
+                      style={{ color: topic.color, backgroundColor: `${topic.color}12`, borderColor: `${topic.color}25` }}
+                    >
+                      {questionCount} {isBn ? "প্রশ্ন" : "q"}
+                    </span>
+                  </div>
+
+                  {/* Label */}
+                  <div>
+                    <div className="font-bold text-stone-900 text-base mb-1" style={{ color: topic.color }}>
+                      {(isBn && (topic as any).labelBn) ? (topic as any).labelBn : topic.label}
+                    </div>
+                    {description && (
+                      <div className="text-stone-500 text-xs font-medium leading-relaxed line-clamp-2">
+                        {description}
+                      </div>
+                    )}
+                    {questionCount === 0 && (
+                      <div className="text-amber-600 text-xs font-bold mt-1">No questions yet</div>
+                    )}
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex items-center gap-1 text-xs font-bold mt-auto" style={{ color: topic.color }}>
+                    {isBn ? "শুরু করুন" : "Start"}
+                    <Icons.ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
@@ -146,13 +240,13 @@ export default function AssessmentClient({
   // ── Submitting ─────────────────────────────────────────────────────────────
   if (phase === "submitting" || phase === "done") {
     return (
-      <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center gap-6 bg-slate-50 relative overflow-hidden p-6 text-center">
+      <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center gap-6 bg-stone-50 relative overflow-hidden p-6 text-center">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent pointer-events-none" />
         <div className="relative z-10 flex flex-col items-center animate-up">
           <div className="relative mb-8">
             <div className="absolute inset-0 bg-emerald-200 rounded-full blur-xl animate-pulse" />
             <div className="w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center relative border border-emerald-50">
-              <Icons.Activity className="text-emerald-700" size={40} />
+              <Icons.Activity className="text-orange-600" size={40} />
             </div>
             <svg className="absolute inset-0 w-24 h-24 -rotate-90" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="46" fill="transparent" stroke="#E2E8F0" strokeWidth="6" />
@@ -162,7 +256,7 @@ export default function AssessmentClient({
           <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">
             {isBn ? "ফলাফল তৈরি হচ্ছে..." : "Analyzing your data"}
           </h2>
-          <p className="text-slate-500 font-medium text-lg">
+          <p className="text-stone-500 font-medium text-lg">
             {isBn ? "আপনার তথ্য যাচাই করা হচ্ছে" : "Generating your personalized clinical insights..."}
           </p>
         </div>
@@ -183,26 +277,26 @@ export default function AssessmentClient({
   const IconComponent = selectedTopic ? ((Icons as any)[selectedTopic.icon] || Icons.Activity) : Icons.Activity;
 
   return (
-    <div className="min-h-[calc(100vh-60px)] flex flex-col items-center pt-8 pb-20 px-4 sm:px-6 bg-slate-50">
+    <div className="min-h-[calc(100vh-60px)] flex flex-col items-center pt-8 pb-20 px-4 sm:px-6 bg-stone-50">
       <div className="w-full max-w-2xl relative">
         
         {/* Progress Bar (Sticky Top) */}
         <div className="sticky top-4 z-20 bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-slate-100 mb-8">
           <div className="flex items-center gap-4">
-            <button onClick={goBack} disabled={loading} className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button onClick={goBack} disabled={loading} className="p-2 rounded-xl text-stone-400 hover:text-slate-700 hover:bg-stone-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               <Icons.ArrowLeft size={20} />
             </button>
             <div className="flex-1">
               <div className="flex justify-between items-end mb-2">
                 {selectedTopic && (
-                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
+                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-orange-700 bg-orange-50 px-2.5 py-1 rounded-md border border-emerald-100">
                     <IconComponent size={14} /> 
                     {isBn && selectedTopic.labelBn ? selectedTopic.labelBn : selectedTopic.label}
                   </span>
                 )}
-                <span className="text-xs font-bold text-slate-400">{Math.round(progress)}% Complete</span>
+                <span className="text-xs font-bold text-stone-400">{Math.round(progress)}% Complete</span>
               </div>
-              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
                 <div style={{ width: `${progress}%` }} className="h-full bg-gradient-to-r from-emerald-600 to-teal-500 rounded-full transition-all duration-700 ease-out" />
               </div>
             </div>
@@ -233,10 +327,10 @@ export default function AssessmentClient({
                     key={opt.id} 
                     onClick={() => submitAnswer(opt)} 
                     disabled={loading}
-                    className={`group relative text-left p-5 border-2 rounded-2xl cursor-pointer text-[1.05rem] font-semibold transition-all duration-200 overflow-hidden outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30
+                    className={`group relative text-left p-5 border-2 rounded-2xl cursor-pointer text-[1.05rem] font-semibold transition-all duration-200 overflow-hidden outline-none focus-visible:ring-4 focus-visible:ring-orange-500/30
                       ${isSelected 
-                        ? 'border-emerald-600 bg-emerald-50/50 text-emerald-900 shadow-md scale-[0.99] translate-y-0.5' 
-                        : 'border-white bg-white text-slate-700 shadow-sm hover:border-emerald-200 hover:shadow-md hover:bg-emerald-50/20'
+                        ? 'border-emerald-600 bg-orange-50/50 text-orange-900 shadow-md scale-[0.99] translate-y-0.5' 
+                        : 'border-white bg-white text-slate-700 shadow-sm hover:border-orange-200 hover:shadow-md hover:bg-orange-50/20'
                       }
                       ${loading && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}
                     `}
@@ -245,7 +339,7 @@ export default function AssessmentClient({
                     <div className="relative z-10 flex items-center justify-between">
                       <span className="pr-4">{label}</span>
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors
-                        ${isSelected ? 'border-emerald-600 bg-emerald-600' : 'border-slate-200 bg-slate-50 group-hover:border-emerald-300'}
+                        ${isSelected ? 'border-emerald-600 bg-orange-600' : 'border-stone-200 bg-stone-50 group-hover:border-emerald-300'}
                       `}>
                         {isSelected && <Icons.Check size={14} className="text-white" />}
                       </div>
@@ -266,9 +360,9 @@ export default function AssessmentClient({
                   max={5} 
                   defaultValue={3} 
                   id="scale-input" 
-                  className="w-full h-3 bg-slate-100 rounded-full appearance-none outline-none focus:ring-4 focus:ring-emerald-500/20 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-8 [&::-webkit-slider-thumb]:h-8 [&::-webkit-slider-thumb]:bg-emerald-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer hover:[&::-webkit-slider-thumb]:bg-emerald-700 hover:[&::-webkit-slider-thumb]:scale-110 transition-all" 
+                  className="w-full h-3 bg-stone-100 rounded-full appearance-none outline-none focus:ring-4 focus:ring-orange-500/20 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-8 [&::-webkit-slider-thumb]:h-8 [&::-webkit-slider-thumb]:bg-orange-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-pointer hover:[&::-webkit-slider-thumb]:bg-orange-600 hover:[&::-webkit-slider-thumb]:scale-110 transition-all" 
                 />
-                <div className="absolute top-0 left-0 w-full flex justify-between text-xs font-bold text-slate-400">
+                <div className="absolute top-0 left-0 w-full flex justify-between text-xs font-bold text-stone-400">
                   <span>1 — Mild</span>
                   <span>3 — Moderate</span>
                   <span>5 — Severe</span>
@@ -281,7 +375,7 @@ export default function AssessmentClient({
                   if (syntheticOpt) submitAnswer(syntheticOpt);
                 }} 
                 disabled={loading} 
-                className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-wait"
+                className="w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 text-white font-bold py-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-wait"
               >
                 {loading ? <Icons.Loader2 className="animate-spin" size={20} /> : (isBn ? "পরবর্তী" : "Continue")}
                 {!loading && <Icons.ArrowRight size={20} />}
@@ -294,7 +388,7 @@ export default function AssessmentClient({
             <div className="bg-white border border-white shadow-sm rounded-3xl p-6">
               <textarea 
                 id="text-input" 
-                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 min-h-[160px] mb-6 transition-all font-medium resize-y" 
+                className="w-full p-4 bg-stone-50 border border-stone-200 rounded-2xl text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 min-h-[160px] mb-6 transition-all font-medium resize-y" 
                 placeholder={isBn ? "এখানে লিখুন..." : "Type your answer in detail..."} 
               />
               <button 
@@ -303,7 +397,7 @@ export default function AssessmentClient({
                   if (val.trim()) submitAnswer({ id: "text", label: val, value: val, severity: 0, endAssessment: false });
                 }} 
                 disabled={loading} 
-                className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-wait"
+                className="w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 text-white font-bold py-4 rounded-2xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-wait"
               >
                 {loading ? <Icons.Loader2 className="animate-spin" size={20} /> : (isBn ? "পরবর্তী" : "Continue")}
                 {!loading && <Icons.ArrowRight size={20} />}
@@ -316,7 +410,7 @@ export default function AssessmentClient({
           <button 
             onClick={() => { if(confirm("End the assessment early?")) completeAssessment(); }} 
             disabled={loading}
-            className="text-slate-400 hover:text-slate-600 font-semibold text-sm transition-colors border-b border-transparent hover:border-slate-300 pb-0.5 disabled:opacity-50"
+            className="text-stone-400 hover:text-stone-600 font-semibold text-sm transition-colors border-b border-transparent hover:border-slate-300 pb-0.5 disabled:opacity-50"
           >
             {isBn ? "মূল্যায়ন শেষ করুন" : "Save and finish assessment early"}
           </button>

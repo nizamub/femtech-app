@@ -56,7 +56,7 @@ export async function sendHealthReport(assessmentId: string) {
   <div style="max-width:600px;margin:0 auto;padding:32px 16px;">
     <!-- Header -->
     <div style="text-align:center;margin-bottom:32px;">
-      <h1 style="color:#065F46;margin:0;font-size:28px;">Aura</h1>
+      <h1 style="color:#065F46;margin:0;font-size:28px;">Usha</h1>
       <p style="color:#64748B;margin:4px 0 0;">Modern Serenity & Wellness Tech</p>
     </div>
 
@@ -92,16 +92,16 @@ export async function sendHealthReport(assessmentId: string) {
     <!-- Footer -->
     <div style="text-align:center;color:#64748B;font-size:12px;">
       <p>This report is for informational purposes only and does not replace professional medical advice.</p>
-      <p style="margin-top:8px;color:#94A3B8;">© 2025 Aura — Modern Serenity & Wellness Tech</p>
+      <p style="margin-top:8px;color:#94A3B8;">© 2025 Usha — Modern Serenity & Wellness Tech</p>
     </div>
   </div>
 </body>
 </html>`;
 
     await resend.emails.send({
-      from:    process.env.RESEND_FROM!,
-      to:      user.email,
-      subject: `Your Aura Report — ${dateStr}`,
+      from: process.env.RESEND_FROM!,
+      to: user.email,
+      subject: `Your Usha Report — ${dateStr}`,
       html,
     });
 

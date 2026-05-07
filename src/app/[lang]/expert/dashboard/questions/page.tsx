@@ -31,9 +31,9 @@ export default async function QuestionsPage({ params }: { params: Promise<{ lang
     <div className="animate-up max-w-6xl mx-auto pb-12">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <HelpCircle className="text-emerald-800" size={28} /> Question & Logic Manager
+          <HelpCircle className="text-orange-700" size={28} /> Question & Logic Manager
         </h2>
-        <p className="text-sm text-slate-500 font-medium">Create, edit, and configure branching logic for all assessment questions.</p>
+        <p className="text-sm text-stone-500 font-medium">Create, edit, and configure branching logic for all assessment questions.</p>
       </div>
       <QuestionsClient
         initialTopics={topicsWithQuestions}

@@ -21,10 +21,10 @@ export default async function ExpertCliniciansPage({ params }: { params: Promise
     <div className="animate-up max-w-7xl mx-auto">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
-          <Hospital className="text-emerald-800" size={28} />
+          <Hospital className="text-orange-700" size={28} />
           Clinician Directory
         </h2>
-        <p className="text-sm text-slate-500 font-medium">Manage the directory of recommended specialists and hospitals.</p>
+        <p className="text-sm text-stone-500 font-medium">Manage the directory of recommended specialists and hospitals.</p>
       </div>
       <CliniciansClient initialClinicians={allClinicians} lang={lang as Locale} />
     </div>

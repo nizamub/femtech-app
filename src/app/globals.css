@@ -1,4 +1,4 @@
-/* This is the new Tailwind v4 import */
+/* USHA Design System — Tailwind v4 */
 @import "tailwindcss";
 
 @layer base {
@@ -7,28 +7,35 @@
   }
 
   body {
-    /* @apply works seamlessly here to set the new Aura background */
-    @apply bg-slate-50 text-slate-900 antialiased;
+    /* USHA: warm stone base replaces cool slate */
+    @apply bg-stone-50 text-stone-900 antialiased;
   }
 }
 
-/* ── Scrollbar Polish (Optional but nice for the new Aura theme) ── */
+/* ── USHA Scrollbar ──────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  /* slate-100 */
+  background: #faf9f6; /* warm cream */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  /* slate-300 */
-  border-radius: 4px;
+  background: #d6cfc4; /* warm stone-300 */
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-  /* slate-400 */
+  background: #c2410c; /* USHA terracotta */
+}
+
+/* ── Utility: animate-up (entry fade + slide) ────────────────────────────── */
+@keyframes usha-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-up {
+  animation: usha-up 0.45s cubic-bezier(0.22, 0.8, 0.36, 1) both;
 }

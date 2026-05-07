@@ -16,7 +16,9 @@ const PRESET_IDS = new Set([
 
 const ICON_SUGGESTIONS = [
   "Activity", "Heart", "Brain", "Bone", "Droplet", "Eye", "Thermometer", "Stethoscope",
-  "Pill", "Syringe", "Microscope", "Dna", "TestTube", "Baby", "Salad", "Apple", "Dumbbell"
+  "Pill", "Syringe", "Microscope", "Dna", "TestTube", "Baby", "Salad", "Apple",
+  "Dumbbell", "Flower2", "HeartPulse", "ShieldCheck", "Leaf", "Sun", "Moon",
+  "User", "Users", "HandHeart", "Ribbon", "Zap", "Wind", "Waves", "Flame",
 ];
 
 const COLOR_PALETTE = [
@@ -131,15 +133,15 @@ export default function TopicsManagerPage() {
       <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
-            <Folder className="text-emerald-800" size={28} /> Manage Topics
+            <Folder className="text-orange-700" size={28} /> Manage Topics
           </h2>
-          <p className="text-sm text-slate-500 font-medium">Toggle visibility, set weights, add custom topics, or edit questions.</p>
+          <p className="text-sm text-stone-500 font-medium">Toggle visibility, set weights, add custom topics, or edit questions.</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white border border-slate-200 hover:border-emerald-500 text-slate-700 hover:text-emerald-800 font-semibold py-2 px-4 rounded-xl transition-colors shadow-sm" onClick={() => setShowModal(true)}>
+          <button className="bg-white border border-stone-200 hover:border-orange-500 text-slate-700 hover:text-orange-700 font-semibold py-2 px-4 rounded-xl transition-colors shadow-sm" onClick={() => setShowModal(true)}>
             + New Topic
           </button>
-          <button className={`font-semibold py-2 px-5 rounded-xl transition-all shadow-sm flex items-center gap-2 ${saved ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-emerald-800 hover:bg-emerald-700 text-white'}`} onClick={save}>
+          <button className={`font-semibold py-2 px-5 rounded-xl transition-all shadow-sm flex items-center gap-2 ${saved ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-orange-700 hover:bg-orange-600 text-white'}`} onClick={save}>
             {saved ? <><CheckCircle2 size={18} /> Saved!</> : "Save Changes"}
           </button>
         </div>
@@ -157,7 +159,7 @@ export default function TopicsManagerPage() {
           const isLucide = !!(Icons as any)[iconString];
 
           return (
-            <div key={t.id} className={`bg-white border rounded-2xl p-5 shadow-sm transition-all ${t.visible ? 'border-slate-200 hover:shadow-md' : 'border-slate-200 opacity-60 bg-slate-50 grayscale-[20%]'}`}>
+            <div key={t.id} className={`bg-white border rounded-2xl p-5 shadow-sm transition-all ${t.visible ? 'border-stone-200 hover:shadow-md' : 'border-stone-200 opacity-60 bg-stone-50 grayscale-[20%]'}`}>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 {/* Left: icon + label */}
                 <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -173,7 +175,7 @@ export default function TopicsManagerPage() {
                         </span>
                       )}
                     </div>
-                    <div className="text-sm text-slate-500 font-medium mt-0.5">
+                    <div className="text-sm text-stone-500 font-medium mt-0.5">
                       {t.questions.length} question{t.questions.length !== 1 ? "s" : ""}
                     </div>
                   </div>
@@ -181,8 +183,8 @@ export default function TopicsManagerPage() {
 
                 {/* Right: controls */}
                 <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap shrink-0">
-                  <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1">
-                    <span className="text-xs font-bold text-slate-400 uppercase">Wt</span>
+                  <div className="flex items-center gap-2 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1">
+                    <span className="text-xs font-bold text-stone-400 uppercase">Wt</span>
                     <select
                       className="bg-transparent text-sm font-bold text-slate-700 focus:outline-none focus:ring-0 cursor-pointer appearance-none"
                       value={t.weight}
@@ -193,14 +195,14 @@ export default function TopicsManagerPage() {
                   </div>
 
                   <button
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-sm transition-colors border ${t.visible ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-100 border-slate-200 text-slate-500 hover:bg-slate-200"}`}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-sm transition-colors border ${t.visible ? "bg-white border-stone-200 text-stone-600 hover:bg-stone-50" : "bg-stone-100 border-stone-200 text-stone-500 hover:bg-slate-200"}`}
                     onClick={() => toggleVisible(t.id)}
                   >
                     {t.visible ? <Eye size={16} /> : <EyeOff size={16} />}
                     {t.visible ? "Visible" : "Hidden"}
                   </button>
 
-                  <Link href={`/${lang}/expert/dashboard/topics/${t.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-sm transition-colors border border-emerald-200">
+                  <Link href={`/${lang}/expert/dashboard/topics/${t.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 font-semibold text-sm transition-colors border border-orange-200">
                     <Edit2 size={16} /> Edit
                   </Link>
 
@@ -218,11 +220,11 @@ export default function TopicsManagerPage() {
 
       {/* Empty state */}
       {topics.length === 0 && (
-        <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center shadow-sm">
+        <div className="bg-white border border-stone-200 rounded-3xl p-12 text-center shadow-sm">
           <Folder className="text-slate-300 mx-auto mb-4" size={64} />
           <h3 className="text-xl font-bold text-slate-900 mb-2">No Topics Yet</h3>
-          <p className="text-slate-500 font-medium mb-6">Get started by creating your first diagnostic topic.</p>
-          <button className="bg-emerald-800 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm" onClick={() => setShowModal(true)}>
+          <p className="text-stone-500 font-medium mb-6">Get started by creating your first diagnostic topic.</p>
+          <button className="bg-orange-700 hover:bg-orange-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm" onClick={() => setShowModal(true)}>
             + Create Topic
           </button>
         </div>
@@ -230,16 +232,16 @@ export default function TopicsManagerPage() {
 
       {/* ── New Topic Modal ── */}
       {showModal && (
-        <div className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade" onClick={e => { if (e.target === e.currentTarget) closeModal(); }}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-slate-200 animate-up">
+        <div className="fixed inset-0 z-[1000] bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade" onClick={e => { if (e.target === e.currentTarget) closeModal(); }}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-stone-200 animate-up">
 
             {/* Modal header */}
             <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
               <div>
                 <h3 className="text-lg font-bold text-slate-900 m-0">Create New Topic</h3>
-                <p className="text-xs text-slate-500 font-medium mt-0.5">Add a custom diagnostic topic with questions</p>
+                <p className="text-xs text-stone-500 font-medium mt-0.5">Add a custom diagnostic topic with questions</p>
               </div>
-              <button onClick={closeModal} className="text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-full p-2 transition-colors">
+              <button onClick={closeModal} className="text-stone-400 hover:text-stone-600 bg-stone-50 hover:bg-stone-100 rounded-full p-2 transition-colors">
                 <X size={20} />
               </button>
             </div>
@@ -247,9 +249,9 @@ export default function TopicsManagerPage() {
             <div className="p-6">
               {/* Topic Name */}
               <div className="mb-5">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Topic Name *</label>
+                <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">Topic Name *</label>
                 <input
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-semibold"
+                  className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-semibold"
                   placeholder="e.g. Mental Health Screening"
                   value={form.label}
                   onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
@@ -259,9 +261,9 @@ export default function TopicsManagerPage() {
 
               {/* Description */}
               <div className="mb-5">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Description *</label>
+                <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">Description *</label>
                 <textarea
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium resize-y min-h-[80px]"
+                  className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-medium resize-y min-h-[80px]"
                   placeholder="Brief description of what this topic assesses..."
                   value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
@@ -273,47 +275,44 @@ export default function TopicsManagerPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
                 {/* Icon picker */}
                 <div className="relative" ref={emojiRef}>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Icon</label>
+                  <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">Icon</label>
                   <button
                     type="button"
-                    className="w-full flex justify-between items-center px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-semibold"
+                    className="w-full flex justify-between items-center px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-semibold"
                     onClick={() => setEmojiOpen(v => !v)}
                   >
                     <span className="flex items-center gap-2">
                       {(() => {
                         const IconComp = (Icons as any)[form.icon] || Icons.Activity;
-                        const isLucide = !!(Icons as any)[form.icon];
-                        return isLucide ? <IconComp size={20} className="text-emerald-800" /> : <span className="text-xl">{form.icon}</span>;
+                        return <IconComp size={20} className="text-orange-700" />;
                       })()}
-                      <span className="text-sm font-medium text-slate-600 truncate max-w-[100px]">{form.icon}</span>
+                      <span className="text-sm font-medium text-stone-600 truncate max-w-[100px]">
+                        {form.icon.replace(/([A-Z])/g, ' $1').trim()}
+                      </span>
                     </span>
-                    <ChevronDown size={16} className="text-slate-400" />
+                    <ChevronDown size={16} className="text-stone-400" />
                   </button>
                   {emojiOpen && (
-                    <div className="absolute top-[calc(100%+8px)] left-0 z-50 bg-white border border-slate-200 rounded-2xl p-3 w-[260px] shadow-xl grid grid-cols-6 gap-2">
-                      {ICON_SUGGESTIONS.map(iconName => {
-                        const IconComp = (Icons as any)[iconName];
-                        if (!IconComp) return null;
-                        return (
-                          <button
-                            key={iconName}
-                            type="button"
-                            onClick={() => { setForm(f => ({ ...f, icon: iconName })); setEmojiOpen(false); }}
-                            className={`flex items-center justify-center p-2 rounded-lg transition-all ${form.icon === iconName ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 border border-transparent'}`}
-                            title={iconName}
-                          >
-                            <IconComp size={20} />
-                          </button>
-                        );
-                      })}
-                      <div className="col-span-6 mt-2">
-                        <input
-                          className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                          placeholder="Type icon name or emoji..."
-                          value={form.icon}
-                          onChange={e => setForm(f => ({ ...f, icon: e.target.value }))}
-                          onClick={e => e.stopPropagation()}
-                        />
+                    <div className="absolute top-[calc(100%+8px)] left-0 z-50 bg-white border border-stone-200 rounded-2xl p-3 w-[280px] shadow-xl">
+                      <div className="grid grid-cols-6 gap-2 max-h-[200px] overflow-y-auto">
+                        {ICON_SUGGESTIONS.map(iconName => {
+                          const IconComp = (Icons as any)[iconName];
+                          if (!IconComp) return null;
+                          return (
+                            <button
+                              key={iconName}
+                              type="button"
+                              onClick={() => { setForm(f => ({ ...f, icon: iconName })); setEmojiOpen(false); }}
+                              className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all gap-1 ${form.icon === iconName ? 'bg-orange-100 text-orange-700 border border-orange-300' : 'text-stone-500 hover:bg-stone-100 hover:text-slate-900 border border-transparent'}`}
+                              title={iconName.replace(/([A-Z])/g, ' $1').trim()}
+                            >
+                              <IconComp size={22} />
+                              <span className="text-[0.55rem] font-semibold truncate w-full text-center leading-tight">
+                                {iconName.replace(/([A-Z])/g, ' $1').trim()}
+                              </span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -322,8 +321,8 @@ export default function TopicsManagerPage() {
 
                 {/* Color picker */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Accent Color</label>
-                  <div className="grid grid-cols-5 gap-1.5 p-2 bg-slate-50 rounded-xl border border-slate-200">
+                  <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">Accent Color</label>
+                  <div className="grid grid-cols-5 gap-1.5 p-2 bg-stone-50 rounded-xl border border-stone-200">
                     {COLOR_PALETTE.map(c => (
                       <button
                         key={c}
@@ -353,24 +352,24 @@ export default function TopicsManagerPage() {
                   <div className="font-bold text-lg" style={{ color: form.color }}>
                     {form.label || "Topic Name Preview"}
                   </div>
-                  <div className="text-xs text-slate-500 font-medium">{form.description || "Topic description preview"}</div>
+                  <div className="text-xs text-stone-500 font-medium">{form.description || "Topic description preview"}</div>
                 </div>
               </div>
 
               {/* Weight */}
               <div className="mb-8">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Scoring Weight</label>
+                <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">Scoring Weight</label>
                 <div className="relative w-[180px]">
                   <select
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-semibold appearance-none cursor-pointer"
+                    className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-semibold appearance-none cursor-pointer"
                     value={form.weight}
                     onChange={e => setForm(f => ({ ...f, weight: Number(e.target.value) }))}
                   >
                     {[0.5, 1, 1.5, 2, 3].map(w => <option key={w} value={w}>{w}x — {w === 0.5 ? "Minor" : w === 1 ? "Standard" : w === 1.5 ? "Elevated" : w === 2 ? "High" : "Critical"}</option>)}
                   </select>
-                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
                 </div>
-                <div className="text-xs text-slate-500 font-medium mt-1.5">
+                <div className="text-xs text-stone-500 font-medium mt-1.5">
                   Higher weight = greater influence on the overall health score.
                 </div>
               </div>
@@ -378,14 +377,14 @@ export default function TopicsManagerPage() {
               {/* Actions */}
               <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
                 <button
-                  className="px-5 py-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-semibold rounded-xl transition-colors"
+                  className="px-5 py-2.5 text-stone-500 hover:text-slate-700 hover:bg-stone-50 font-semibold rounded-xl transition-colors"
                   onClick={closeModal}
                 >
                   Cancel
                 </button>
 
                 <button
-                  className="bg-emerald-800 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm"
+                  className="bg-orange-700 hover:bg-orange-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm"
                   onClick={handleCreate}
                 >
                   {"\u2728"} Create Topic

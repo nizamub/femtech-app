@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aura — Modern Serenity & Wellness Tech",
-  description: "A comprehensive wellness and health assessment platform",
-  keywords: "wellness, health, diagnostic, modern tech, Aura, স্বাস্থ্য",
+  title: "উষা USHA — Women's Health Platform",
+  description: "A digital health platform built for women of the Hill Tracts — expert consultations, health education, and nearby care.",
+  keywords: "USHA, উষা, women health, Hill Tracts, Bangladesh, স্বাস্থ্য, diagnostic",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#F8FAFC" />
+        <meta name="theme-color" content="#C2410C" />
       </head>
       <body>
         {children}

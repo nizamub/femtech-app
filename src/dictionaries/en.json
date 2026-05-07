@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Aura",
+    "appName": "Usha",
     "tagline": "Modern Serenity & Wellness Tech",
     "loading": "Loading...",
     "save": "Save",
@@ -32,9 +32,9 @@
   "auth": {
     "login": "Sign In",
     "loginTitle": "Welcome Back",
-    "loginSubtitle": "Sign in to your Aura account",
+    "loginSubtitle": "Sign in to your Usha account",
     "register": "Create Account",
-    "registerTitle": "Join Aura",
+    "registerTitle": "Join Usha",
     "registerSubtitle": "Create your account to start your health assessment",
     "email": "Email Address",
     "password": "Password",
@@ -162,7 +162,7 @@
     "noClinicians": "No clinicians found in your area"
   },
   "metadata": {
-    "title": "Aura — Modern Serenity & Wellness Tech",
+    "title": "Usha — Modern Serenity & Wellness Tech",
     "description": "A comprehensive wellness and health assessment platform"
   }
 }
