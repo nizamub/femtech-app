@@ -9,9 +9,9 @@ import { Folder, Eye, EyeOff, Trash2, Edit2, X, Activity, ChevronDown, CheckCirc
 import * as Icons from "lucide-react";
 
 const PRESET_IDS = new Set([
-  "hepatitis","pregnancy-problems","arsenic","menstrual","viral",
-  "nutrition","pregnancy-care","birth-control","hpv-vaccination",
-  "breast-cancer","thyroid","iron-deficiency",
+  "hepatitis", "pregnancy-problems", "arsenic", "menstrual", "viral",
+  "nutrition", "pregnancy-care", "birth-control", "hpv-vaccination",
+  "breast-cancer", "thyroid", "iron-deficiency",
 ]);
 
 const ICON_SUGGESTIONS = [
@@ -149,10 +149,10 @@ export default function TopicsManagerPage() {
       <div className="flex flex-col gap-4">
         {topics.map(t => {
           const meta = TOPIC_META.find(m => m.id === t.id);
-          const iconString  = meta?.icon  ?? t.icon;
+          const iconString = meta?.icon ?? t.icon;
           const color = meta?.color ?? t.color;
           const isCustom = !PRESET_IDS.has(t.id);
-          
+
           const IconComp = (Icons as any)[iconString] || Icons.Activity;
           const isLucide = !!(Icons as any)[iconString];
 
@@ -191,7 +191,7 @@ export default function TopicsManagerPage() {
                       {[0.5, 1, 1.5, 2, 3].map(w => <option key={w} value={w}>{w}x</option>)}
                     </select>
                   </div>
-                  
+
                   <button
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-sm transition-colors border ${t.visible ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-100 border-slate-200 text-slate-500 hover:bg-slate-200"}`}
                     onClick={() => toggleVisible(t.id)}
@@ -199,11 +199,11 @@ export default function TopicsManagerPage() {
                     {t.visible ? <Eye size={16} /> : <EyeOff size={16} />}
                     {t.visible ? "Visible" : "Hidden"}
                   </button>
-                  
+
                   <Link href={`/${lang}/expert/dashboard/topics/${t.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-sm transition-colors border border-emerald-200">
                     <Edit2 size={16} /> Edit
                   </Link>
-                  
+
                   {isCustom && (
                     <button className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors" onClick={() => deleteTopic(t.id)}>
                       <Trash2 size={18} />
@@ -232,7 +232,7 @@ export default function TopicsManagerPage() {
       {showModal && (
         <div className="fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade" onClick={e => { if (e.target === e.currentTarget) closeModal(); }}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-slate-200 animate-up">
-            
+
             {/* Modal header */}
             <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
               <div>
@@ -377,20 +377,20 @@ export default function TopicsManagerPage() {
 
               {/* Actions */}
               <div className="flex gap-3 justify-end pt-4 border-t border-slate-100">
-                <button className="px-5 py-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-semibold rounded-xl transition-colors" onClick={closeModal}>Cancel</button>
-                <button className="bg-emerald-800 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm" onClick={handleCreate}>
-                  Create Topic
+                <button
+                  className="px-5 py-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-semibold rounded-xl transition-colors"
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="bg-emerald-800 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors shadow-sm"
+                  onClick={handleCreate}
+                >
+                  ✨ Create Topic
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}onClick={handleCreate}>
-                ✨ Create Topic
-              </button>
             </div>
           </div>
         </div>
